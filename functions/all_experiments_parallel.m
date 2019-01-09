@@ -1,10 +1,10 @@
-function [] = all_experiments(sub)
+function [] = all_experiments_parallel(sub)
 addpath(genpath('.'))
 
-% p = gcp('nocreate');
-% if isempty(p)
-%     p = parpool(4);
-% end
+p = gcp('nocreate');
+if isempty(p)
+    p = parpool(24);
+end
 
 %% Load data
 load('./info.mat')
@@ -72,15 +72,15 @@ for ii = 1:numRuns
     allData = exp{subject}{session};
     features = get_features(allData, model.period, featureFunc);
     outfname = [fileDes '-Session_' num2str(session)];
-%     jobs = parfeval(p,@crossvalidate_func,0,model,gestures,features,Nshot,outfname);
-    crossvalidate_func(model,gestures,features,Nshot,outfname);
+    jobs = parfeval(p,@crossvalidate_func,0,model,gestures,features,Nshot,outfname);
+%     crossvalidate_func(model,gestures,features,Nshot,outfname);
     for session = 2:8
         gestures = gestList{session};
         allData = exp{subject}{session};
         features = get_features(allData, model.period, featureFunc);
         outfname = [fileDes '-Session_' num2str(session)];
-%         jobs(end+1) = parfeval(p,@crossvalidate_func,0,model,gestures,features,Nshot,outfname);
-        crossvalidate_func(model,gestures,features,Nshot,outfname);
+        jobs(end+1) = parfeval(p,@crossvalidate_func,0,model,gestures,features,Nshot,outfname);
+%         crossvalidate_func(model,gestures,features,Nshot,outfname);
     end
     
     % run baseline experiment
@@ -88,8 +88,8 @@ for ii = 1:numRuns
     allData = [exp{subject}{1}; exp{subject}{2}];
     features = get_features(allData, model.period, featureFunc);
     outfname = [fileDes '-Baseline_'];
-%     jobs(end+1) = parfeval(p,@crossvalidate_func,0,model,gestures,features,Nshot,outfname);
-    crossvalidate_func(model,gestures,features,Nshot,outfname);
+    jobs(end+1) = parfeval(p,@crossvalidate_func,0,model,gestures,features,Nshot,outfname);
+%     crossvalidate_func(model,gestures,features,Nshot,outfname);
     
     % run arm position experiment
     gestures = singleDOF;
@@ -98,11 +98,11 @@ for ii = 1:numRuns
     trainFeatures = get_features(trainData, model.period, featureFunc);
     testFeatures = get_features(testData, model.period, featureFunc);
     outfname = [fileDes '-ArmPos___'];
-%     jobs(end+1) = parfeval(p,@newcontext_func,0,model,gestures,trainFeatures,testFeatures,Nshot,outfname);
-    newcontext_func(model,gestures,trainFeatures,testFeatures,Nshot,outfname);
+    jobs(end+1) = parfeval(p,@newcontext_func,0,model,gestures,trainFeatures,testFeatures,Nshot,outfname);
+%     newcontext_func(model,gestures,trainFeatures,testFeatures,Nshot,outfname);
     outfname = [fileDes '-ArmPosUpd'];
-%     jobs(end+1) = parfeval(p,@updatecontext_func,0,model,gestures,trainFeatures,testFeatures,Nshot,Nshot,outfname);
-    updatecontext_func(model,gestures,trainFeatures,testFeatures,Nshot,Nshot,outfname);
+    jobs(end+1) = parfeval(p,@updatecontext_func,0,model,gestures,trainFeatures,testFeatures,Nshot,Nshot,outfname);
+%     updatecontext_func(model,gestures,trainFeatures,testFeatures,Nshot,Nshot,outfname);
     
     % run different day experiment
     gestures = singleDOF;
@@ -111,11 +111,11 @@ for ii = 1:numRuns
     trainFeatures = get_features(trainData, model.period, featureFunc);
     testFeatures = get_features(testData, model.period, featureFunc);
     outfname = [fileDes '-DiffDay__'];
-%     jobs(end+1) = parfeval(p,@newcontext_func,0,model,gestures,trainFeatures,testFeatures,Nshot,outfname);
-    newcontext_func(model,gestures,trainFeatures,testFeatures,Nshot,outfname);
+    jobs(end+1) = parfeval(p,@newcontext_func,0,model,gestures,trainFeatures,testFeatures,Nshot,outfname);
+%     newcontext_func(model,gestures,trainFeatures,testFeatures,Nshot,outfname);
     outfname = [fileDes '-DiffDayUp'];
-%     jobs(end+1) = parfeval(p,@updatecontext_func,0,model,gestures,trainFeatures,testFeatures,Nshot,Nshot,outfname);
-    updatecontext_func(model,gestures,trainFeatures,testFeatures,Nshot,Nshot,outfname);
+    jobs(end+1) = parfeval(p,@updatecontext_func,0,model,gestures,trainFeatures,testFeatures,Nshot,Nshot,outfname);
+%     updatecontext_func(model,gestures,trainFeatures,testFeatures,Nshot,Nshot,outfname);
     
     % run prolong experiment
     gestures = singleDOF;
@@ -124,11 +124,11 @@ for ii = 1:numRuns
     trainFeatures = get_features(trainData, model.period, featureFunc);
     testFeatures = get_features(testData, model.period, featureFunc);
     outfname = [fileDes '-Prolong__'];
-%     jobs(end+1) = parfeval(p,@newcontext_func,0,model,gestures,trainFeatures,testFeatures,Nshot,outfname);
-    newcontext_func(model,gestures,trainFeatures,testFeatures,Nshot,outfname);
+    jobs(end+1) = parfeval(p,@newcontext_func,0,model,gestures,trainFeatures,testFeatures,Nshot,outfname);
+%     newcontext_func(model,gestures,trainFeatures,testFeatures,Nshot,outfname);
     outfname = [fileDes '-ProlongUp'];
-%     jobs(end+1) = parfeval(p,@updatecontext_func,0,model,gestures,trainFeatures,testFeatures,Nshot,Nshot,outfname);
-    updatecontext_func(model,gestures,trainFeatures,testFeatures,Nshot,Nshot,outfname);
+    jobs(end+1) = parfeval(p,@updatecontext_func,0,model,gestures,trainFeatures,testFeatures,Nshot,Nshot,outfname);
+%     updatecontext_func(model,gestures,trainFeatures,testFeatures,Nshot,Nshot,outfname);
     
     % run effort level    
     % first treat effort level as if it were new context
@@ -141,11 +141,11 @@ for ii = 1:numRuns
         trainFeatures = get_features(trainData, model.period, featureFunc);
         testFeatures = get_features(testData, model.period, featureFunc);
         outfname = [fileDes '-EffoCont' num2str(test)];
-%         jobs(end+1) = parfeval(p,@newcontext_func,0,model,gestures,trainFeatures,testFeatures,Nshot,outfname);
-        newcontext_func(model,gestures,trainFeatures,testFeatures,Nshot,outfname);
+        jobs(end+1) = parfeval(p,@newcontext_func,0,model,gestures,trainFeatures,testFeatures,Nshot,outfname);
+%         newcontext_func(model,gestures,trainFeatures,testFeatures,Nshot,outfname);
         outfname = [fileDes '-EffoUpda' num2str(test)];
-%         jobs(end+1) = parfeval(p,@updatecontext_func,0,model,gestures,trainFeatures,testFeatures,Nshot,Nshot,outfname);
-        updatecontext_func(model,gestures,trainFeatures,testFeatures,Nshot,Nshot,outfname);
+        jobs(end+1) = parfeval(p,@updatecontext_func,0,model,gestures,trainFeatures,testFeatures,Nshot,Nshot,outfname);
+%         updatecontext_func(model,gestures,trainFeatures,testFeatures,Nshot,Nshot,outfname);
     end
     
     % test combined gestures
@@ -198,19 +198,19 @@ for ii = 1:numRuns
         allData = testData(test).data;
         features = get_features(allData, model.period, featureFunc);
         outfname = [fileDes '-EffoComb' num2str(test)];
-%         jobs(end+1) = parfeval(p,@crossvalidate_func,0,model,gestures,features,Nshot,outfname);
-        crossvalidate_func(model,gestures,features,Nshot,outfname);
+        jobs(end+1) = parfeval(p,@crossvalidate_func,0,model,gestures,features,Nshot,outfname);
+%         crossvalidate_func(model,gestures,features,Nshot,outfname);
     end
 
-%     if ~wait(jobs)
-%         break
-%     end
+    if ~wait(jobs)
+        break
+    end
 end
 t = toc;
 f = fopen([outputDir 'elapsed_time.txt'],'w');
 fprintf(f ,[num2str(t) ' seconds']);
 fclose(f);
-% delete(p);
+delete(p);
 
 end
 
