@@ -5,6 +5,9 @@ This repository provides the offline dataset and MATLAB scripts used to verify t
 ### System requirements
 - MATLAB (MathWorks, Inc.). Tested on version R2019a.
 
+### Installation guide
+Install MATLAB, add the whole **`flexemg_v2/`** directory to the path, and you are ready to go!
+
 ### Repo structure
 Note that all scripts are commented with function descriptions, input arguments, returns, etc.
 
@@ -17,7 +20,7 @@ To find the classification accuracy for subject 1 without using parallel computi
 
 > `all_expermients(1, 0)`
 
-The results will be saved in **`output/`** folder.
+The results will be saved in **`output/`** folder with classification accuracy results for each run.
 
 ### Problems?
 If you face any problems or discover any bugs, please let us know: *MyLastName AT berkeley DOT edu*
